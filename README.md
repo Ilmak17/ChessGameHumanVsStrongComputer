@@ -40,5 +40,3 @@ After each move, the board is displayed with updated positions. A prompt will ap
 The example screenshot shows the initial setup of the board at the beginning of the game, with White to move.
 
 ---
-
-This README provides a comprehensive guide to the advanced version of your chess game with a strong computer AI. Let me know if you need any further customization or technical explanations!
