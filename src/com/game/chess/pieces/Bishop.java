@@ -21,6 +21,11 @@ public class Bishop extends SlidingPiece {
     }
 
     @Override
+    public int getPieceValue() {
+        return 3;
+    }
+
+    @Override
     public String getPieceType() {
         return PieceType.BISHOP.getName();
     }

@@ -118,12 +118,33 @@ public class BoardImpl implements Board {
     }
 
     @Override
-    public Piece getThreatingPiece(Color color) {
-        Piece piece = getPieces().get(threateningPieceIdx);
-        if (piece.getColor().equals(color)) {
-            return piece;
+    public Piece executeTemporaryMove(Piece piece, Position position) {
+        Piece capturedPiece = null;
+        if (pieceExistsAt(position) && isNotPieceColor(position, piece.getColor())) {
+            capturedPiece = getPieceByPosition(position);
+            capturedPiece.setCaptured(true);
+            getPieces().remove(capturedPiece);
         }
-        return null;
+        piece.forceMove(position);
+
+        return capturedPiece;
+    }
+
+    @Override
+    public void undoMove(Piece piece, Position originalPosition, Position newPosition, Piece capturedPiece) {
+        piece.forceMove(originalPosition);
+        if (nonNull(capturedPiece)) {
+            capturedPiece.setCaptured(false);
+            pieces.add(capturedPiece);
+        }
+    }
+
+    @Override
+    public Piece findKing(Color color) {
+        return pieces.stream()
+                .filter(piece -> piece.getColor().equals(color) && piece instanceof King)
+                .findFirst()
+                .orElse(null);
     }
 
     private List<Position> getBlockingPositions(Position kingPos, Position threatPos) {
@@ -159,24 +180,5 @@ public class BoardImpl implements Board {
         return blockingPositions
                 .stream()
                 .anyMatch(piece::isValidMove);
-    }
-
-    private Piece executeTemporaryMove(Piece piece, Position position) {
-        Piece capturedPiece = null;
-        if (pieceExistsAt(position) && isNotPieceColor(position, piece.getColor())) {
-            capturedPiece = getPieceByPosition(position);
-            capturedPiece.setCaptured(true);
-            getPieces().remove(capturedPiece);
-        }
-        piece.forceMove(position);
-
-        return capturedPiece;
-    }
-
-    private Piece findKing(Color color) {
-        return pieces.stream()
-                .filter(piece -> piece.getColor().equals(color) && piece instanceof King)
-                .findFirst()
-                .orElse(null);
     }
 }

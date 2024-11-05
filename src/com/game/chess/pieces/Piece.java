@@ -71,6 +71,8 @@ public abstract class Piece implements Movement {
 
     public abstract boolean canAttack(Position destPosition);
 
+    public abstract int getPieceValue();
+
     public abstract String getPieceType();
 
     public abstract String getSymbol();

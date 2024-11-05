@@ -20,6 +20,12 @@ public class Rook extends SlidingPiece {
         return isValidLinearMove(destPosition);
     }
 
+
+    @Override
+    public int getPieceValue() {
+        return 9;
+    }
+
     @Override
     public String getPieceType() {
         return PieceType.ROOK.getName();

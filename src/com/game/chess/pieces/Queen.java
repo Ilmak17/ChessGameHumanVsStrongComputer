@@ -36,6 +36,11 @@ public class Queen extends SlidingPiece {
     }
 
     @Override
+    public int getPieceValue() {
+        return 9;
+    }
+
+    @Override
     public String getPieceType() {
         return PieceType.QUEEN.getName();
     }

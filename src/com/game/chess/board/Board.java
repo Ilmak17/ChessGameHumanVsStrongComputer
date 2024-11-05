@@ -25,5 +25,9 @@ public interface Board {
 
     boolean isMoveLeavingKingInCheck(Piece piece, Position position);
 
-    Piece getThreatingPiece(Color color);
+    Piece executeTemporaryMove(Piece piece, Position position);
+
+    void undoMove(Piece piece, Position startPosition, Position pos, Piece capturedPiece);
+
+    Piece findKing(Color color);
 }

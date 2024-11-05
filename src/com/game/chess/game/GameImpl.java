@@ -3,6 +3,8 @@ package com.game.chess.game;
 import com.game.chess.board.BoardImpl;
 import com.game.chess.board.Board;
 import com.game.chess.game.input.SelectedPiece;
+import com.game.chess.minimax.MiniMaxImpl;
+import com.game.chess.minimax.MiniMax;
 import com.game.chess.pieces.Piece;
 import com.game.chess.pieces.Position;
 import com.game.chess.pieces.enums.Color;
@@ -10,8 +12,8 @@ import com.game.chess.ui.Visual;
 import com.game.chess.ui.VisualImpl;
 import com.game.chess.game.input.InputHelper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,11 +23,12 @@ public class GameImpl implements Game {
     private final Board board;
     private final Visual visual;
     private final Scanner scanner;
+    private final Random random;
+    private final MiniMax miniMax;
     private boolean running;
     private boolean isWhiteTurn;
     private boolean drawOffered;
     private boolean isHumanTurn;
-    private final Random random;
 
     private static final String MOVE = "1";
     private static final String DRAW = "2";
@@ -36,6 +39,8 @@ public class GameImpl implements Game {
         visual = new VisualImpl(board);
         scanner = new Scanner(System.in);
         random = new Random();
+        miniMax = new MiniMaxImpl();
+
         this.running = true;
         this.isWhiteTurn = true;
         this.drawOffered = false;
@@ -78,35 +83,13 @@ public class GameImpl implements Game {
     }
 
     private void makeComputerMove() {
-        List<Piece> pieces = board.getPieces();
-
-        List<Piece> availablePieces = new ArrayList<>(pieces.stream()
-                .filter(piece -> piece.getColor() == (isWhiteTurn ? Color.WHITE : Color.BLACK))
-                .toList());
-
-        boolean isMoveMade = false;
-        while (Boolean.FALSE.equals(isMoveMade) && !availablePieces.isEmpty()) {
-            Piece piece = availablePieces.get(random.nextInt(availablePieces.size()));
-            List<Position> allPossibleMoves = piece.getAllPossibleMoves();
-            if (!allPossibleMoves.isEmpty()) {
-                Position position = allPossibleMoves.get(random.nextInt(allPossibleMoves.size()));
-                if (!board.isMoveLeavingKingInCheck(piece, position)) {
-                    piece.move(position);
-                    isMoveMade = true;
-                }
-            }
-
-            if (Boolean.FALSE.equals(isMoveMade)) {
-                availablePieces.remove(piece);
-            }
-        }
-
-        if (Boolean.FALSE.equals(isMoveMade)) {
-            System.out.println("Computer has no valid moves.");
-        }
-
-        updateTurn();
-        getGameState();
+        Optional.ofNullable(miniMax.getBestMove(board, isWhiteTurn ? Color.WHITE : Color.BLACK))
+                .ifPresent(bestMove -> {
+                    board.getPieceByPosition(bestMove.getStartPosition())
+                            .move(bestMove.getEndPosition());
+                    updateTurn();
+                    getGameState();
+                });
     }
 
     private void makeHumanMove() {

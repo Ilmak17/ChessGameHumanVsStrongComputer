@@ -18,7 +18,7 @@ public class King extends Piece {
 
     @Override
     public boolean isValidMove(Position destPosition) {
-        if (getPosition() == destPosition) {
+        if (getPosition().equals(destPosition)) {
             return false;
         }
         Position curPosition = getPosition();
@@ -62,13 +62,20 @@ public class King extends Piece {
 
     @Override
     public boolean canAttack(Position destPosition) {
-        if (getPosition() == destPosition) return false;
+        if (getPosition().equals(destPosition)) {
+            return false;
+        }
 
         Position curPosition = getPosition();
         int dCol = Math.abs(destPosition.getCol() - curPosition.getCol());
         int dRow = Math.abs(destPosition.getRow() - curPosition.getRow());
 
         return dCol <= 1 && dRow <= 1;
+    }
+
+    @Override
+    public int getPieceValue() {
+        return 100;
     }
 
     @Override
