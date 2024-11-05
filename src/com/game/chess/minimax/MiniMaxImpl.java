@@ -33,7 +33,7 @@ public class MiniMaxImpl implements MiniMax {
 
     private Optional<Move> minimax(Board board, Color color, int depth, int alpha, int beta, boolean maximizingPlayer) {
         if (depth == 0 || board.isCheckmate(color)) {
-            return Optional.of(new Move(evaluate(board, color)));
+            return Optional.of(new Move(calculateHeuristicValue(board, color)));
         }
 
         Move bestMove = null;
@@ -85,7 +85,7 @@ public class MiniMaxImpl implements MiniMax {
         return piece.getColor() == (maximizingPlayer ? color : color.opposite());
     }
 
-    private int evaluate(Board board, Color color) {
+    private int calculateHeuristicValue(Board board, Color color) {
         return evaluatePieceScore(board, color)
                 + evaluateKingSafetyScore(board, color)
                 + evaluateControlCenterScore(board, color)
